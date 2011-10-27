@@ -266,9 +266,9 @@ extern _getExtShut
    int _getExtShut(void)
 */
 
-func acquire(sizex, sizey, nbframes) {
+func acquire(nbframes) {
 /* DOCUMENT 
-     img = acquire(sizex, sizey, nbframes);
+     img = acquire(nbframes);
 
      setup the camera for acquisition then acquire nbframes images and stop the acquisition
 
@@ -276,8 +276,10 @@ func acquire(sizex, sizey, nbframes) {
  */
   if(startCam()) return;
   if ( is_void(nbframes) ) nbframes  = 1;
+  yX=yY=sizex=sizey=0
+  _getROI, &yX, &yY, &sizex, &sizey;
   img=array(short(0), sizex, sizey, nbframes);
-  _acquire, &img, sizex, sizey, nbframes;
+  tic; _acquire, &img, sizex, sizey, nbframes; tac();
   stopCam;
   img=int(img);
   ind = where(img<0);
@@ -292,20 +294,46 @@ extern _acquire
 */
 rtd_stop=1;
 func rtd_loop( freq ) {
-  extern sizex, sizey;
-  if(rtd_stop) return;
-  fma; pli, acquire(sizex, sizey); pause,100;
-  after, freq, rtd_loop;
+  extern sizex, sizey, rtd_img, rtd_freq;
+  if(rtd_stop) {
+    stopCam;
+    return;
+  }
+  if(!is_void(freq)) rtd_freq = freq;
+
+  yX=yY=sizex=sizey=0;
+  _getROI, &yX, &yY, &sizex, &sizey;
+  img=array(short(0), sizex, sizey);
+  _acquire, &img, sizex, sizey, 1;
+  rtd_img=int(img);
+  ind = where(rtd_img<0);
+  if(is_array(ind)) rtd_img(ind) += 65536;
+
+  fma; pli, rtd_img; pause,100;
+
+  xy = where2(rtd_img==max(rtd_img));
+  plg, rtd_img(,xy(2));
+
+  
+  after, rtd_freq, rtd_loop;
 }
 
 func start_rtd( freq ){
-  extern rtd_stop;
+  extern rtd_stop, rtd_img;
+
+  if(startCam()) return;
+  
   if(is_void(freq)) freq = 0.1;
   rtd_stop = 0;
+
+  winkill, 10;
+  window, 10, dpi=100;
+  
   rtd_loop, freq;
 }
 
 func stop_rtd (void){
   extern rtd_stop;
   rtd_stop=1;
+  stopCam;
 }
