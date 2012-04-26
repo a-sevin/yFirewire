@@ -263,6 +263,31 @@ int _getExpo(){
   return expo;
 }
 
+int _setExposure(long yExpo){
+  if(camera==NULL) {
+    dc1394_log_error("Camera is not initialised");
+    return -1;
+  }
+
+  err=dc1394_feature_set_value(camera, DC1394_FEATURE_EXPOSURE, yExpo);
+  DC1394_ERR_CLN_RTN(err,_unsetupCam(),"Could not define shutter");
+	
+  return 0;
+}
+
+int _getExposure(){
+  if(camera==NULL) {
+    dc1394_log_error("Camera is not initialised");
+    return -1;
+  }
+
+  uint32_t expo = 0; 
+  err=dc1394_feature_get_value(camera, DC1394_FEATURE_EXPOSURE, &expo);
+  DC1394_ERR_CLN_RTN(err,_unsetupCam(),"Could not get shutter");
+	
+  return expo;
+}
+
 int _setExtShut(long yExpo){
   if(camera==NULL) {
     dc1394_log_error("Camera is not initialised");
@@ -311,6 +336,31 @@ int _getGain(){
   DC1394_ERR_CLN_RTN(err,_unsetupCam(),"Could not get gain");
 
   return gain;
+}
+
+int _setOffset(long yOffset){
+  if(camera==NULL) {
+    dc1394_log_error("Camera is not initialised");
+    return -1;
+  }
+
+  err=dc1394_feature_set_value(camera, DC1394_FEATURE_BRIGHTNESS, yOffset);
+  DC1394_ERR_CLN_RTN(err,_unsetupCam(),"Could not define gain");
+
+  return 0;
+}
+
+int _getOffset(){
+  if(camera==NULL) {
+    dc1394_log_error("Camera is not initialised");
+    return -1;
+  }
+
+  uint32_t yOffset = 0;
+  err=dc1394_feature_get_value(camera, DC1394_FEATURE_BRIGHTNESS, &yOffset);
+  DC1394_ERR_CLN_RTN(err,_unsetupCam(),"Could not get gain");
+
+  return yOffset;
 }
 
 int _setROI(long yX, long yY, long ySizeX, long ySizeY){

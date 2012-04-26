@@ -210,7 +210,7 @@ func setExpo( expo ){
 /* DOCUMENT 
      setExpo, expo;
 
-     define the exposure of the camera
+     define the exposure of the camera using DC1394_FEATURE_SHUTTER feature
      
    SEE ALSO:
  */
@@ -225,7 +225,7 @@ func getExpo( void ){
 /* DOCUMENT 
      expo = getExpo();
 
-     return the exposure of the camera
+     return the exposure of the camera using DC1394_FEATURE_SHUTTER feature
 
    SEE ALSO:
  */
@@ -234,6 +234,66 @@ func getExpo( void ){
 extern _getExpo
 /* PROTOTYPE
    int _getExpo(void)
+*/
+
+func setExposure( expo ){
+/* DOCUMENT 
+     setExposure, expo;
+
+     define the exposure of the camera using DC1394_FEATURE_EXPOSURE feature
+     
+   SEE ALSO:
+ */
+  return _setExposure( expo );
+}
+extern _setExposure
+/* PROTOTYPE
+   int _setExposure(long yExpo)
+*/
+
+func getExposure( void ){
+/* DOCUMENT 
+     expo = getExposure();
+
+     return the exposure of the camera using DC1394_FEATURE_EXPOSURE feature
+
+   SEE ALSO:
+ */
+  return _getExposure();
+}
+extern _getExposure
+/* PROTOTYPE
+   int _getExposure(void)
+*/
+
+func setOffset( offset ){
+/* DOCUMENT 
+     setOffset, offset;
+
+     define the offset of the camera using DC1394_FEATURE_BRIGHTNESS feature
+     
+   SEE ALSO:
+ */
+  return _setOffset( offset );
+}
+extern _setOffset
+/* PROTOTYPE
+   int _setOffset(long offset)
+*/
+
+func getOffset( void ){
+/* DOCUMENT 
+     offset = getOffset();
+
+     return the exposure of the camera using DC1394_FEATURE_BRIGHTNESS feature
+
+   SEE ALSO:
+ */
+  return _getOffset();
+}
+extern _getOffset
+/* PROTOTYPE
+   int _getOffset(void)
 */
 
 func setExtShut( expo ){
